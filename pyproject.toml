@@ -5,11 +5,11 @@ description = "CLI for timing reading progress"
 authors = ["felipeboffnunes <felipeboffnunes@protonmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 rich = "^12.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.1.1"
 rstcheck = "^3.3.1"
 
 [build-system]

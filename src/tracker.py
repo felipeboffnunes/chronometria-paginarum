@@ -34,5 +34,3 @@ class Tracker:
         self.current_frame = frame
 
         self.data = pd.concat([self.data, data_row], ignore_index=True)
-
-

@@ -1,4 +1,4 @@
-from src.layout import get_table
+from src.layout import get_table, get_panel
 
 
 def test_get_table_layout():

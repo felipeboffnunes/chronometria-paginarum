@@ -1,4 +1,4 @@
-from rich.progress import Progress, Task, TaskID
+from rich.progress import Progress, TaskID
 from rich.table import Column
 from rich.table import Table
 
@@ -12,6 +12,8 @@ def get_table(title: str = "Chronometria Paginarum") -> Table:
     )
 
 
+# TODO: when goal is reached
+#  add unlimited overload progress bar
 def get_progress(total: int = 100) -> Progress:
     progress = Progress()
     progress.add_task("", total=total)

@@ -9,7 +9,7 @@ Reverse Jenga (with Taico)
 
 Taico invites you to play a game of Reverse Jenga.
 
-.. image:: ./chronometria-paginarum/images/build_0_1_6.png
+.. image:: ./images/build_0_1_6.png
 
 Rules
 -----

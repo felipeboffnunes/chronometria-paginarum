@@ -7,7 +7,7 @@ A CLI application to store and evaluate effectiveness and distraction rate while
 Reverse Jenga (with Taico)
 ##########################
 
-Taico invites you to play a game of Reverse Jenga.
+Taico invites you to play a game of Reverse Jenga. Pile up books until they fall to win the match.
 
 .. image:: ./images/build_0_1_6.png
 

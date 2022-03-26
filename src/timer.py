@@ -1,23 +1,21 @@
-import datetime
-
-from rich.console import Console
-from rich.layout import Layout
-from rich.progress import Progress
 from rich.prompt import Confirm
-from rich.table import Table
 
-from src.layout import get_table, get_progress, update_progress, add_task, setup_layout
+from src.layout import LayoutHandler
 from src.session import Session
 
 
 def basic_timer_loop() -> None:
+    title = "Test"
+
+    session = Session(title=title)
+    main_layout = LayoutHandler()
+
     action = Confirm()
-    console = Console()
-    session = Session(title="test", page_goal=50)
-    progress = get_progress(session.page_goal)
     while action.ask("", choices=["", "0"], show_choices=False):
         session.update()
-        refresh_output(console, progress, session)
+
+        data = session.get_tracker_tail_array()
+        main_layout.refresh_output(data, session.overload)
 
         if session.complete and not session.overload:
             # TODO: autosave
@@ -26,12 +24,12 @@ def basic_timer_loop() -> None:
                 "Do you want to continue on overload?"
             ):
                 session.overload = True
-                add_task(progress)
+                main_layout.add_progress_task()
             else:
                 break
 
         # TODO: Allow extending overload
-        if progress.finished:
+        if main_layout.progress.finished:
             print("Good bye, Tony Hawk.")
             break
 
@@ -39,26 +37,3 @@ def basic_timer_loop() -> None:
     if not session.complete:
         # TODO: Save session dialogue
         print("Well, you have tried. Right? Forget it... Go.")
-
-
-def refresh_console(console: Console, layout: Layout) -> None:
-    console.clear()
-    console.print(layout)
-
-
-def refresh_table(session: Session) -> Table:
-    table = get_table(session.title)
-    for time, page, frame in session.get_tracker_tail_array()[::-1]:
-        table.add_row(
-            str(datetime.timedelta(seconds=time))[:-4],
-            str(page),
-            str(datetime.timedelta(seconds=frame))[:-4]
-        )
-    return table
-
-
-def refresh_output(console: Console, progress: Progress, session: Session) -> None:
-    table = refresh_table(session)
-    update_progress(progress, session.overload)
-    layout = setup_layout(progress, table)
-    refresh_console(console, layout)

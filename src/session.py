@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 from numpy import ndarray
 
+from src.parameters import PARAMS
 from src.tracker import Tracker
 from src.utils import get_book_id_from_title
 
@@ -10,8 +11,7 @@ from src.utils import get_book_id_from_title
 class Session:
 
     title: str
-    page_goal: int
-
+    page_goal: int = field(init=False, default=PARAMS['PAGE_GOAL'])
     book_id: int = field(init=False)
     complete: bool = field(init=False, default=False)
     overload: bool = field(init=False, default=False)
@@ -43,5 +43,5 @@ class Session:
         if self._tracker.page_count == self.page_goal:
             self.complete = True
 
-    def get_tracker_tail_array(self, rows: int = 24) -> ndarray:
-        return self._tracker.data.tail(n=rows).to_numpy()
+    def get_tracker_tail_array(self, rows: int = 25) -> ndarray:
+        return self._tracker.data.tail(n=rows).to_numpy()[::-1]

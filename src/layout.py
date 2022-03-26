@@ -27,4 +27,4 @@ def update_progress(progress: Progress, overload: bool = False) -> None:
 
 
 def add_task(progress: Progress, task_name: str = "[red]Overload...") -> None:
-    progress.add_task(task_name, total=100)
+    progress.add_task(task_name, total=OVERLOAD_TASK_SIZE)

@@ -43,5 +43,5 @@ class Session:
         if self._tracker.page_count == self.page_goal:
             self.complete = True
 
-    def get_tracker_tail_array(self, rows: int = 5) -> ndarray:
+    def get_tracker_tail_array(self, rows: int = 24) -> ndarray:
         return self._tracker.data.tail(n=rows).to_numpy()

@@ -1,7 +1,9 @@
 import datetime
 
 from rich.console import Console
+from rich.progress import Progress
 from rich.prompt import Confirm
+from rich.table import Table
 
 from src.layout import get_table, get_progress, update_progress, add_task
 from src.session import Session
@@ -12,27 +14,50 @@ def basic_timer_loop() -> None:
     console = Console()
     session = Session(title="test", page_goal=10)
     progress = get_progress(session.page_goal)
-    overload = False
     while action.ask("", choices=["", "0"], show_choices=False):
-        session.tracker.update()
-        update_progress(progress, overload)
-        # TODO: simplify this
+        session.update()
+        refresh_output(console, progress, session)
+
+        if session.complete and not session.overload:
+            # TODO: autosave
+            if action.ask(
+                "You have reached your page goal for this session.\n"
+                "Do you want to continue on overload?"
+            ):
+                session.overload = True
+                add_task(progress)
+            else:
+                break
+
+        # TODO: Allow extending overload
         if progress.finished:
-            add_task(progress)
-            overload = True
-        table = get_table(session.title)
-        # TODO: do this properly
-        for idx in range(1, 6):
-            try:
-                time, page, frame = session.tracker.data.iloc[-idx]
+            print("Good bye, Tony Hawk.")
+            break
 
-                time = str(datetime.timedelta(seconds=time))[:-4]
-                page = str(page)
-                frame = str(datetime.timedelta(seconds=frame))[:-4]
+    # TODO: Dialogue dictionary
+    if not session.complete:
+        # TODO: Save session dialogue
+        print("Well, you have tried. Right? Forget it... Go.")
 
-                table.add_row(time, page, frame)
-            except IndexError:
-                pass
-        console.clear()
-        console.print(progress)
-        console.print(table)
+
+def refresh_console(console: Console, progress: Progress, table: Table) -> None:
+    console.clear()
+    console.print(progress)
+    console.print(table)
+
+
+def refresh_table(session: Session) -> Table:
+    table = get_table(session.title)
+    for time, page, frame in session.get_tracker_tail_array()[::-1]:
+        table.add_row(
+            str(datetime.timedelta(seconds=time))[:-4],
+            str(page),
+            str(datetime.timedelta(seconds=frame))[:-4]
+        )
+    return table
+
+
+def refresh_output(console: Console, progress: Progress, session: Session) -> None:
+    table = refresh_table(session)
+    update_progress(progress, session.overload)
+    refresh_console(console, progress, table)

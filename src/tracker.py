@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from timeit import default_timer
 
 import pandas as pd
@@ -15,22 +15,25 @@ def get_tracker_dataframe() -> pd.DataFrame:
 @dataclass
 class Tracker:
 
-    start: float = default_timer()
-    current_frame: float = default_timer()
+    first_frame: float = field(init=False)
+    current_frame: float = field(init=False)
 
-    page: int = 0
-    data: pd.DataFrame = get_tracker_dataframe()
+    page_count: int = 0
+    data: pd.DataFrame = field(init=False, default_factory=get_tracker_dataframe, repr=False)
+
+    def start(self) -> None:
+        self.first_frame = self.current_frame = default_timer()
 
     def update(self) -> None:
         frame = default_timer()
 
         data_row = pd.DataFrame([{
-            "time": frame - self.start,
-            "page": self.page,
+            "time": frame - self.first_frame,
+            "page": self.page_count,
             "frame": frame - self.current_frame,
         }])
 
-        self.page += 1
+        self.page_count += 1
         self.current_frame = frame
 
         self.data = pd.concat([self.data, data_row], ignore_index=True)

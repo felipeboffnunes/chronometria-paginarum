@@ -2,27 +2,27 @@ from dataclasses import dataclass, field
 
 from numpy import ndarray
 
-from src.parameters import PARAMS
+from src.config import PARAMS
+from src.data import DataHandler
 from src.tracker import Tracker
-from src.utils import get_book_id_from_title
 
 
 @dataclass
 class Session:
 
-    title: str
+    book_id: int
+
     page_goal: int = field(init=False, default=PARAMS['PAGE_GOAL'])
-    book_id: int = field(init=False)
     complete: bool = field(init=False, default=False)
     overload: bool = field(init=False, default=False)
+
     _tracker: Tracker = field(init=False, default_factory=Tracker, repr=False)
 
     def __post_init__(self) -> None:
-        self.book_id = get_book_id_from_title(self.title)
         self._tracker.start()
 
     def load(self) -> None:
-        """"
+        """
         TODO: Load previous sessions
         Depends on save()
         """
@@ -30,13 +30,7 @@ class Session:
         pass
 
     def save(self) -> None:
-        """
-        TODO: Save sessions
-        Overload is stored as surplus (when not in debit).
-        It is used to compensate missing/unfinished sessions in Reverse Jenga.
-        """
-
-        pass
+        DataHandler.save_session_data(self.book_id, self._tracker.data)
 
     def update(self) -> None:
         self._tracker.update()
@@ -45,3 +39,6 @@ class Session:
 
     def get_tracker_tail_array(self, rows: int = 25) -> ndarray:
         return self._tracker.data.tail(n=rows).to_numpy()[::-1]
+
+
+

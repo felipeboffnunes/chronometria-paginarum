@@ -1,4 +1,0 @@
-PARAMS = {
-    "OVERLOAD_TASK_SIZE": 10,
-    "PAGE_GOAL": 50,
-}

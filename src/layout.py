@@ -1,3 +1,4 @@
+
 import datetime
 from dataclasses import dataclass, field
 from functools import cached_property
@@ -8,10 +9,8 @@ from rich.layout import Layout
 from rich.progress import Progress, TaskID
 from rich.table import Column, Table
 
-from src.parameters import PARAMS
-
-# TODO: use Path instead of string, save somewhere instead of here
-TAICO_MAIN = './assets/ascii/taico.txt'
+from src.config import PARAMS
+from src.utils import load_ascii
 
 
 @dataclass
@@ -27,9 +26,9 @@ class LayoutHandler:
 
     def set_table_layout(self) -> None:
         self.table = Table(
-            Column("Time", justify="left"),
-            Column("Page", justify="center"),
-            Column("Time Frame", justify="right")
+            Column('Time', justify='left'),
+            Column('Page', justify='center'),
+            Column('Time Frame', justify='right')
         )
 
     def refresh_table(self, tracker_tail_array: ndarray) -> None:
@@ -43,10 +42,10 @@ class LayoutHandler:
 
     def set_progress_layout(self) -> None:
         self.progress = Progress()
-        self.progress.add_task("[green]Progress...", total=PARAMS["PAGE_GOAL"])
+        self.progress.add_task("[green]Progress...", total=PARAMS['PAGE_GOAL'])
 
     def add_progress_task(self) -> None:
-        self.progress.add_task("[red]Overload...", total=PARAMS["OVERLOAD_TASK_SIZE"])
+        self.progress.add_task("[red]Overload...", total=PARAMS['OVERLOAD_TASK_SIZE'])
 
     def update_progress(self, overload: bool = False) -> None:
         self.progress.update(TaskID(1 if overload else 0), advance=1)
@@ -64,10 +63,10 @@ class LayoutHandler:
         self.layout = Layout()
         self.layout.split_row(
             Layout(self.table, name='tracker', ratio=3),
-            Layout(name="main", ratio=6),
+            Layout(name='main', ratio=6),
         )
         self.layout['main'].split_column(
-            Layout(self.ascii_str, name='ascii', ratio=10),
+            Layout(self.ascii_taico, name='ascii', ratio=10),
             Layout(self.progress, name='progress', ratio=2),
         )
 
@@ -79,7 +78,6 @@ class LayoutHandler:
         self.console.print(self.layout)
 
     @cached_property
-    def ascii_str(self) -> str:
-        with open(TAICO_MAIN, "r", encoding='utf-8') as file:
-            ascii_str = file.read()
-        return ascii_str
+    def ascii_taico(self) -> str:
+        return load_ascii('taico.txt')
+

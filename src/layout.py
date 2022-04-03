@@ -1,6 +1,6 @@
 
-import datetime
 from dataclasses import dataclass, field
+from datetime import timedelta
 from functools import cached_property
 
 from numpy import ndarray
@@ -35,9 +35,9 @@ class LayoutHandler:
         self.set_table_layout()
         for time, page, frame in tracker_tail_array:
             self.table.add_row(
-                str(datetime.timedelta(seconds=time))[:-4],
+                str(timedelta(seconds=time))[:-4],
                 str(page),
-                str(datetime.timedelta(seconds=frame))[:-4]
+                str(timedelta(seconds=frame))[:-4]
             )
 
     def set_progress_layout(self) -> None:
@@ -61,11 +61,16 @@ class LayoutHandler:
         self.set_table_layout()
 
         self.layout = Layout()
-        self.layout.split_row(
-            Layout(self.table, name='tracker', ratio=3),
-            Layout(name='main', ratio=6),
+        self.layout.split_column(
+            Layout('\n', name='padding_top'),
+            Layout(name='main', ratio=12)
         )
-        self.layout['main'].split_column(
+        self.layout['main'].split_row(
+            Layout(self.table, name='tracker', ratio=3),
+            Layout(name='right', ratio=6),
+
+        )
+        self.layout['right'].split_column(
             Layout(self.ascii_taico, name='ascii', ratio=10),
             Layout(self.progress, name='progress', ratio=2),
         )
@@ -77,7 +82,16 @@ class LayoutHandler:
         self.console.clear()
         self.console.print(self.layout)
 
+    def session_started(self) -> None:
+        self.console.print(
+            "[green]Session initialized![/green]\n"
+            "[bold]Press Enter whenever you have finished reading the first page[/bold]"
+        )
+
     @cached_property
     def ascii_taico(self) -> str:
         return load_ascii('taico.txt')
 
+    @cached_property
+    def ascii_arson(self) -> str:
+        return load_ascii('arson.txt')

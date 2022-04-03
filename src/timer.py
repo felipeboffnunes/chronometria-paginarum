@@ -2,13 +2,15 @@
 from rich.prompt import Confirm
 
 from src.layout import LayoutHandler
-from src.utils import setup_session
+from src.session import Session
 
 
 def basic_timer_loop() -> None:
 
+    session = Session()
     layout = LayoutHandler()
-    session = setup_session()
+
+    layout.session_started()
 
     action = Confirm()
     while action.ask("Next page [Enter] / Quit [0]", choices=['', '0'], show_choices=False):
@@ -24,6 +26,7 @@ def basic_timer_loop() -> None:
                 "Do you want to continue on overload?"
             ):
                 session.overload = True
+                # TODO - ask initial overload size
                 layout.add_progress_task()
             else:
                 break

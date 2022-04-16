@@ -1,42 +1,68 @@
+from dataclasses import dataclass, field
 
-from rich.prompt import Confirm
+from rich.prompt import Confirm, Prompt
 
 from src.layout import LayoutHandler
 from src.session import Session
 
 
-def basic_timer_loop() -> None:
+@dataclass
+class Chrono:
+    session: Session = field(init=False, default_factory=Session)
+    layout: LayoutHandler = field(init=False, default_factory=LayoutHandler)
 
-    session = Session()
-    layout = LayoutHandler()
+    def __post_init__(self):
+        self.start()
 
-    layout.session_started()
+    def start(self):
+        self.layout.session_started()
+        self.handle_session()
 
-    action = Confirm()
-    while action.ask("Next page [Enter] / Quit [0]", choices=['', '0'], show_choices=False):
-        session.update()
+    def handle_session(self):
+        while self.ask_next_step():
+            self.session.update()
 
-        data = session.get_tracker_tail_array()
-        layout.refresh_output(data, session.overload)
+            data = self.session.get_tracker_tail_array()
+            self.layout.refresh_output(data, self.session.overload)
 
-        if session.complete and not session.overload:
-            session.save()
-            if action.ask(
-                "You have reached your page goal for this session.\n"
-                "Do you want to continue on overload?"
-            ):
-                session.overload = True
-                # TODO - ask initial overload size
-                layout.add_progress_task()
-            else:
+            if self.session.complete and not self.session.overload:
+                if self.ask_overload_start():
+                    self.session.overload = True
+                    self.layout.add_progress_task()
+                else:
+                    break
+            elif self.layout.progress.finished:
                 break
 
-        # TODO: Allow extending overload
-        if layout.progress.finished:
-            print("Good bye, Tony Hawk.")
-            break
+        self.finish_session()
 
-    # TODO: Dialogue dictionary
-    if not session.complete:
-        # TODO: Save session dialogue
-        print("Well, you have tried. Right? Forget it... Go.")
+    @staticmethod
+    def ask_next_step() -> bool:
+        return Confirm.ask(
+            "Press [Enter] to continue / Quit [0]",
+            choices=['', '0'],
+            show_choices=False
+        )
+
+    @staticmethod
+    def ask_overload_start() -> bool:
+        return Confirm.ask(
+            "You have reached your page goal for this session.\n"
+            "Do you want to continue on overload?"
+        )
+
+    def finish_session(self) -> None:
+        self.session.save()
+        self.layout.console.print("[green]Session saved!")
+        if self.session.complete:
+            print("Good bye, Tony Hawk.")
+        else:
+            print("Well, you have tried. Right? Forget it... Go.")
+
+    @staticmethod
+    def dialogue_begin() -> None:
+        Prompt.ask(
+            "Did you get some coffee?\n"
+            "Prepare yourself, do not get distracted.\n"
+            "Press [Enter] to begin"
+        )

@@ -7,9 +7,9 @@ import pandas as pd
 
 def get_tracker_dataframe() -> pd.DataFrame:
     return pd.DataFrame({
-        'time': pd.Series(dtype='timedelta64[s]'),
         'page': pd.Series(dtype='int64'),
         'frame': pd.Series(dtype='timedelta64[s]'),
+        'time': pd.Series(dtype='timedelta64[s]')
     })
 
 
@@ -29,9 +29,9 @@ class Tracker:
         frame = default_timer()
 
         data_row = pd.DataFrame([{
-            'time': frame - self.first_frame,
             'page': self.page_count,
             'frame': frame - self.current_frame,
+            'time': frame - self.first_frame,
         }])
 
         self.page_count += 1

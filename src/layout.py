@@ -33,7 +33,7 @@ class LayoutHandler:
 
     def refresh_table(self, tracker_tail_array: ndarray) -> None:
         self.set_table_layout()
-        for time, page, frame in tracker_tail_array:
+        for page, frame, time in tracker_tail_array:
             self.table.add_row(
                 str(timedelta(seconds=time))[:-4],
                 str(page),
@@ -83,9 +83,10 @@ class LayoutHandler:
         self.console.print(self.layout)
 
     def session_started(self) -> None:
+        self.console.clear()
         self.console.print(
             "[green]Session initialized![/green]\n"
-            "[bold]Press Enter whenever you have finished reading the first page[/bold]"
+            "[bold]Press Enter when you have finished reading the first page[/bold]"
         )
 
     @cached_property

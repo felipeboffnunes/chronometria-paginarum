@@ -1,13 +1,3 @@
-.. raw:: html
-
-    <style> .red {color:#EB5160; font-weight:bold; font-size:16px} </style>
-    <style> .green {color:#42E2B8; font-weight:bold; font-size:16px} </style>
-    <style> .black {color:#071013; font-weight:bold; font-size:16px} </style>
-
-.. role:: red
-.. role:: green
-.. role:: black
-
 *******************************
 Chronometria Paginarum (v. 0.2.4)
 *******************************
@@ -36,9 +26,9 @@ Rules
         If the average number of pages read reaches a number lower than the page threshold,
         the player is offered 7 days for redemption.
 
-        The player :red:`loses` if the average is still lower than the page threshold after that.
+        The player loses if the average is still lower than the page threshold after that.
 
-        The player :green:`wins` if the Tower falls and the player has an average of pages read per day
+        The player wins if the Tower falls and the player has an average of pages read per day
         greater or equal to the page threshold.
 
 
@@ -48,7 +38,7 @@ Rules
 
         Otherwise, the player has no fallback.
 
-    Winning the game grants :black:`no reward`. Losing it presents :black:`no penalties`.
+    Winning the game grants no reward. Losing it presents no penalties.
 
 *****
 Setup

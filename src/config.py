@@ -1,6 +1,6 @@
 
 PARAMS = {
-    'OVERLOAD_TASK_SIZE': 0,
+    'OVERLOAD_TASK_SIZE': 10,
     'PAGE_GOAL': 0,
     'BOOK_ID': 0,
 }

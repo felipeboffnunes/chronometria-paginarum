@@ -21,14 +21,6 @@ class Session:
     def __post_init__(self) -> None:
         self._tracker.start()
 
-    def load(self) -> None:
-        """
-        TODO: Load previous sessions
-        Depends on save()
-        """
-
-        pass
-
     def save(self) -> None:
         DataHandler.save_session_data(self.book_id, self._tracker.data)
 

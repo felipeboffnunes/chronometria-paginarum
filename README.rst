@@ -1,56 +1,62 @@
+.. raw:: html
+
+    <style> .red {color:#EB5160; font-weight:bold; font-size:16px} </style>
+    <style> .green {color:#42E2B8; font-weight:bold; font-size:16px} </style>
+    <style> .black {color:#071013; font-weight:bold; font-size:16px} </style>
+
+.. role:: red
+.. role:: green
+.. role:: black
+
 *******************************
-Chronometria Paginarum (v. 0.2)
+Chronometria Paginarum (v. 0.2.4)
 *******************************
 
-A CLI application to store and evaluate effectiveness and distraction rate while reading books.
+A CLI application to track and handle Reverse Jenga sessions.
+
+There are no plans on improving the current version.
+Version 0.2.4 is functional (if you want some CSVs or whatever... that's what it does...), and will stay as is.
+
+Next step is integrating the data from the CLI sessions with the Reverse Jenga Dashboard.
 
 Reverse Jenga (with Taico)
 ##########################
 
-Taico invites you to play a game of Reverse Jenga. Pile up books until they fall to win the match.
-
-.. image:: ./images/build_0_1_6.png
+Taico invites you to play a game of Reverse Jenga.
 
 Rules
 -----
 
 .. container::
+
     Instead of removing tiles from a tower, you pile books on top of each other.
 
-    The match is set with a *page threshold*.
+    The match is set with a *page threshold*. It is the number of pages the player wants to read everyday.
 
-    If the Jenga tower falls and the player has an average of pages read per day
-    greater or equal to the page threshold, the player wins.
+        If the average number of pages read reaches a number lower than the page threshold,
+        the player is offered 7 days for redemption.
 
-    Page threshold should be a number the player feels comfortable with.
+        The player :red:`loses` if the average is still lower than the page threshold after that.
 
-    If the average number of pages reaches a number lower than the page threshold,
-    the player is offered 7 days for redemption.
-    If the average is still lower than the page threshold after that, the player loses.
+        The player :green:`wins` if the Tower falls and the player has an average of pages read per day
+        greater or equal to the page threshold.
 
-    For beginners, a fallback of 150 pages is set. Adding it to your tracker before the game starts will allow
-    more flexibility during the game.
 
-    Winning the game grants no reward. Losing it presents no penalties.
+    The player can have a fallback of a maximum of 150 pages, allowing more flexibility during the game.
+
+        Those pages must come from a previous untracked/failed session.
+
+        Otherwise, the player has no fallback.
+
+    Winning the game grants :black:`no reward`. Losing it presents :black:`no penalties`.
 
 *****
 Setup
 *****
 
-The system only has the tracker currently.
+To start a session, run:
 
-The sessions are played in a terminal.
-
-The data dashboard will be available in a local web app (WIP Dash Plotly).
-
-Current goals
-#############
-1. Adding basic statistics
-2. Save and load data
-3. Reverse Jenga matches
-4. Dialogue
-5. Allow step back (re-do page count last instance) [backlog]
-
+    poetry run python main.py
 
 First setup
 ###########
